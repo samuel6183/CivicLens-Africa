@@ -1,25 +1,35 @@
 # CivicLens Africa
 
-Independent public intelligence platform for government, policy, procurement and economic insights in Africa.
-
-## Kenya pilot
-The current prototype is a searchable directory of six official public-information sources. Search matches source names, descriptions and categories; it does not search underlying documents or live records. No government affiliation is implied.
+Independent public intelligence platform for government, policy, procurement and economic insights. Kenya-first pilot.
 
 ## Run locally
-Open `frontend/index.html` in a browser, or run `python -m http.server 8000 --directory frontend` from the repository root and visit http://localhost:8000. No dependencies required.
+Requires Python 3.10+.
+```bash
+python -m venv .venv
+# Activate the virtual environment for your operating system.
+pip install -r requirements.txt
+python -m backend.ingest world-bank
+python -m uvicorn backend.main:app --reload
+```
+Open http://127.0.0.1:8000 for the official-source directory and http://127.0.0.1:8000/records.html for the data explorer. API documentation is at /docs. The initial database is empty until ingestion succeeds. External requests require internet access. The source directory is not a live document search.
 
-## Manual acceptance checks
-- Initial view shows six sources.
-- Searching `inflation` shows KNBS.
-- Selecting Procurement shows the procurement portal when the search field is empty.
-- A nonsense query shows an empty-state message.
-- Source links open official websites; verify availability before relying on them.
+## Import public documents
+Run `python -m backend.ingest documents --file your-metadata.json` with a JSON array of records containing country ("KE"), category, title, publisher, HTTPS url, published_date (YYYY-MM-DD or empty), and summary. Verify each source manually before import. Categories: Procurement, Public finance, Economy, Legislation.
 
-## Roadmap
-1. Verify source URLs, access terms, and document availability.
-2. Build ingestion for public budgets, procurement notices, and economic releases, preserving source URL, publisher, dates, country, category, and retrieval timestamp.
-3. Normalize and deduplicate records; add validation and provenance checks.
-4. Implement a backend search API and persistent database, then connect the frontend.
-5. Add aggregate analytics, freshness indicators, automated tests, and deployment.
+## Tests
+```bash
+python -m unittest discover -s tests -v
+```
+Tests use mocked World Bank responses and a temporary database, never live data.
 
-Use public institutional data only; avoid collecting unnecessary personal data. Distinguish missing data from zero, and never represent sample records as official statistics.
+## Container
+```bash
+docker build -t civiclens .
+docker volume create civiclens-data
+docker run --rm -v civiclens-data:/data civiclens python -m backend.ingest world-bank
+docker run --rm -p 8000:8000 -v civiclens-data:/data civiclens
+```
+Use a persistent writable volume and HTTPS in production. See docs/architecture.md for limitations and migration plans.
+
+## Current scope
+Searchable source directory, metadata search, public annual economic data ingestion (GDP growth, inflation and population), indicator tables, read-only API, tests and container configuration. No real-time procurement feeds, automated PDF collection, AI-generated analysis or production hosting yet. No government affiliation.
