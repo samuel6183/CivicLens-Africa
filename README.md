@@ -33,3 +33,11 @@ Use a persistent writable volume and HTTPS in production. See docs/architecture.
 
 ## Current scope
 Searchable source directory, metadata search, public annual economic data ingestion (GDP growth, inflation and population), indicator tables, read-only API, tests and container configuration. No real-time procurement feeds, automated PDF collection, AI-generated analysis or production hosting yet. No government affiliation.
+
+## Public dashboard and deployment
+Open /public.html locally. This static dashboard uses the curated frontend/documents.json metadata and requests annual World Bank observations in the browser. It offers trend charts, means, last-year changes, and CSV exports. The static website does not host FastAPI or SQLite.
+Import the curated catalog into the backend with:
+```bash
+python -m backend.ingest documents --file frontend/documents.json
+```
+GitHub Pages workflow: in repository Settings > Pages, choose GitHub Actions as publishing source. Merge the development PR into main after review and successful validation, then run Publish public dashboard (or push to main). Check the workflow and published URL before announcing availability. No paid services required.

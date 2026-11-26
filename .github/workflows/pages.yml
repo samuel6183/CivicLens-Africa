@@ -1,0 +1,40 @@
+name: Publish public dashboard
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - run: node --check frontend/public.js
+      - uses: actions/configure-pages@v5
+      - run: |
+          mkdir -p site
+          cp frontend/public.html site/index.html
+          cp frontend/public.js frontend/documents.json site/
+          cp frontend/index.html site/directory.html
+          sed -i 's/href="index.html"/href="directory.html"/' site/index.html
+          sed -i 's@<p><a href="records.html">[^<]*</a></p>@@;s/href="public.html"/href="index.html"/' site/directory.html
+          touch site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
+        id: deployment
