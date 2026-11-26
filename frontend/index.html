@@ -1,29 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CivicLens Africa</title>
-</head>
-<body>
-
-<h1>CivicLens Africa</h1>
-
-<h2>Public Intelligence for Africa</h2>
-
-<p>
-Making African public information searchable,
-understandable, and actionable.
-</p>
-
-<input
-type="text"
-placeholder="Search tenders, budgets, regulations..."
-size="50">
-
-<br><br>
-
-<button>Search</button>
-
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CivicLens Africa | Public intelligence</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7f6;color:#172e35;font:16px/1.6 system-ui,sans-serif}header{background:#102e35;color:white;padding:18px max(5%,calc((100% - 1100px)/2));font-weight:700}main{max-width:1100px;margin:auto;padding:32px 20px}h1{font-size:clamp(32px,5vw,56px);line-height:1.1;margin:12px 0}h2{font-size:22px}.hero{padding:30px 0}small,.muted{color:#50646a}form{display:flex;gap:10px;flex-wrap:wrap}input,select,button{font:inherit;padding:12px;border:1px solid #9caaa9;border-radius:6px}input{flex:1;min-width:200px}button{background:#146553;color:white;cursor:pointer;border:0}a{color:#146553}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d69e30;outline-offset:2px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.card{background:white;border:1px solid #dbe4e1;border-radius:10px;padding:20px}.card h3{margin:8px 0}.tag{font-size:12px;text-transform:uppercase;font-weight:700;letter-spacing:.08em;color:#146553}footer{border-top:1px solid #dbe4e1;padding:20px 0;margin-top:30px}
+</style></head><body><header>CivicLens Africa · Public intelligence</header><main><section class="hero"><div class="tag">Kenya · Pilot</div><h1>Public information.<br>Clearer decisions.</h1><p>Explore official sources for budgets, procurement, legislation and economic statistics.</p><form id="search"><input id="query" type="search" aria-label="Search public sources" placeholder="Search budgets, tenders, inflation…"><select id="category" aria-label="Category"><option value="">All categories</option><option>Procurement</option><option>Public finance</option><option>Economy</option><option>Legislation</option></select><button type="submit">Search</button></form></section><section><h2>Official source directory</h2><p class="muted">This pilot searches source descriptions, not individual government documents. No live records have been imported.</p><p id="count" role="status"></p><div id="results" class="cards"></div></section><footer class="muted">Independent research prototype. Not affiliated with any government. Consult original sources for authoritative information.</footer></main><script>
+const sources=[
+{name:"Public Procurement Information Portal",category:"Procurement",description:"Public tenders, procurement notices and contract awards.",url:"https://tenders.go.ke/"},
+{name:"National Treasury",category:"Public finance",description:"National budgets, fiscal policy, public debt and expenditure reports.",url:"https://www.treasury.go.ke/"},
+{name:"Controller of Budget",category:"Public finance",description:"National and county budget implementation reports.",url:"https://cob.go.ke/"},
+{name:"Central Bank of Kenya",category:"Economy",description:"Monetary policy, interest rates, exchange rates and financial statistics.",url:"https://www.centralbank.go.ke/"},
+{name:"Kenya National Bureau of Statistics",category:"Economy",description:"Inflation, consumer prices, GDP, population and official statistics.",url:"https://www.knbs.or.ke/"},
+{name:"Kenya Law",category:"Legislation",description:"Acts, regulations, judgments and legal information.",url:"https://new.kenyalaw.org/"}
+];
+const query=document.getElementById("query"),category=document.getElementById("category"),results=document.getElementById("results");
+function render(){const words=query.value.trim().toLowerCase().split(/\s+/).filter(Boolean);const matches=sources.filter(s=>(!category.value||s.category===category.value)&&words.every(w=>[s.name,s.category,s.description].join(" ").toLowerCase().includes(w)));results.replaceChildren();document.getElementById("count").textContent=matches.length+" source"+(matches.length===1?"":"s")+" found";for(const s of matches){const card=document.createElement("article");card.className="card";for(const [tag,value,cls] of [["div",s.category,"tag"],["h3",s.name,""],["p",s.description,""]]){const el=document.createElement(tag);el.textContent=value;el.className=cls;card.append(el)}const link=document.createElement("a");link.href=s.url;link.textContent="Visit official source";link.target="_blank";link.rel="noopener noreferrer";card.append(link);results.append(card)}if(!matches.length){const p=document.createElement("p");p.textContent="No matching sources. Try a broader keyword or another category.";results.append(p)}}
+document.getElementById("search").addEventListener("submit",e=>{e.preventDefault();render()});query.addEventListener("input",render);category.addEventListener("change",render);render();
+</script></body></html>
