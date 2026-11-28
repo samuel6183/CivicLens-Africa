@@ -40,3 +40,9 @@ Open http://127.0.0.1:8000 and select the dashboard or document search. Live dat
 The latest inspected [Pages deployment failed](https://github.com/samuel6183/CivicLens-Africa/actions/runs/45841882236). This is a functioning code prototype with tested components, not a verified live service. Metadata links do not constitute a full-text archive. No invented economic observations are substituted.
 
 [Engineering reference](docs/engineering-reference.md) · [Research portfolio](https://github.com/samuel6183)
+
+## Verification status
+
+[![Tests](https://github.com/samuel6183/CivicLens-Africa/actions/workflows/test.yml/badge.svg)](https://github.com/samuel6183/CivicLens-Africa/actions/workflows/test.yml)
+
+[Latest successful validation inspected on 28 November 2026](https://github.com/samuel6183/CivicLens-Africa/actions/runs/45922757581). This is evidence of automated workflow execution, not independent scientific replication or a verified public deployment.
